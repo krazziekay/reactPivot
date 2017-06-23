@@ -103,6 +103,7 @@ let jsonPivot = (function() {
                 && typeof testObject === 'object' && typeof testObject.length === 'number';
         },
         stringComparator : function(a, b) {
+            // console.log("String comparator", a, b);
             return a.localeCompare(b);
         },
         numberComparator : function(a, b) {

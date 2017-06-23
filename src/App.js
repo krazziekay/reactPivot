@@ -7,6 +7,7 @@ import './css/App.css';
 import {SAMPLE1, SAMPLE2} from './constants'
 import OwnTable from './components/ownTable/index';
 import axios from 'axios';
+import PapaParse from 'papaparse';
 import {URL, config, body} from './constants';
 
 
@@ -22,6 +23,20 @@ class App extends Component {
 
     componentDidMount() {
         // this.loadFromApi();
+    }
+
+    fileSelection = (e) => {
+        this.setState({loading: true, convertedJson: 'empty'});
+        PapaParse.parse( e.target.files[0], {
+            header: true,
+            dynamicTyping: true,
+            complete: (parsed) => {
+                this.setState( {
+                    convertedJson: parsed.data,
+                    loading:false
+                })
+            }
+        })
     }
 
     loadFromApi = () => {
@@ -41,13 +56,20 @@ class App extends Component {
 
     render() {
         return (
-            <div className="App">
-                {
-                    this.state.loading && <div className="loading">Processing please wait...</div>
+            <div>
+                <div className="App">
+                    {
+                        this.state.loading && <div className="loading">Processing please wait...</div>
 
-                }
-                {/*<OwnTable pivotData={this.state.convertedJson.length > 0 ? this.state.convertedJson : SAMPLE}/>*/}
-                <OwnTable pivotData={SAMPLE1}/>
+                    }
+                    <label htmlFor="csvToJson">Select a CSV file</label>
+                    <input type="file" onChange={this.fileSelection} />
+                </div>
+                    <hr/>
+                <div className="App">
+                    <OwnTable pivotData={this.state.convertedJson.length > 0 ? this.state.convertedJson : SAMPLE1}/>
+                    {/*<OwnTable pivotData={SAMPLE1}/>*/}
+                </div>
             </div>
         );
     }

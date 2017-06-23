@@ -19,6 +19,7 @@ class OwnTable extends Component {
     }
 
     componentDidMount() {
+        console.log("Here is the data", this.props.pivotData);
         this.setState({
             data: this.props.pivotData,
             //Getting the properties of each object in the array
@@ -32,11 +33,21 @@ class OwnTable extends Component {
     }
 
     componentWillReceiveProps(props) {
+        if(props.pivotData === 'empty') {
+            this.setState({
+                data: [],
+                optionFields: [],
+                rowFields: [],
+                columnFields: [],
+                tableData: []
+            });
+            return;
+        }
         this.setState({
             data: props.pivotData,
             //Getting the properties of each object in the array
             optionFields: Object.keys(props.pivotData[0])
-        });
+        }, () => this.handleDragEvents() );
     }
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
