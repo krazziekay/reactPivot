@@ -1,0 +1,49 @@
+/**
+ * Created by kay on 23/6/17.
+ */
+.App {
+  padding: 20px 50px;
+}
+
+
+.gap {
+  margin: 10px;
+}
+
+/*Pivot table css*/
+.option-fields {
+  background: #eee;
+}
+.row-fields {
+  background: #eee;
+}
+.column-fields {
+  background: #eee;
+}
+.colored-bg {
+  background: #e6eeee;
+}
+li {
+  display: inline;
+}
+.field-items {
+  list-style-type: none;
+  background: #5b7b7b;
+  padding: 3px 5px;
+  border-radius: 5px;
+  color: #fff;
+  margin-right: 10px;
+  float: left;
+}
+.loading {
+  position: absolute;
+  top: 45%;
+  left: 40%;
+  background: #215056;
+  padding: 20px;
+  border-radius: 50%;
+  color: white;
+}
+.med-font-size {
+  font-size: 11px;
+}
