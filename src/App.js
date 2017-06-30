@@ -73,15 +73,15 @@ class App extends Component {
     render() {
         return (
             <div>
-                <div className="App">
-                    {
-                        this.state.loading && <div className="loading">Processing please wait...</div>
+                {/*<div className="App">*/}
+                    {/*{*/}
+                        {/*this.state.loading && <div className="loading">Processing please wait...</div>*/}
 
-                    }
-                    <label htmlFor="csvToJson">Select a CSV file</label>
-                    <input type="file" onChange={this.fileSelection} />
-                </div>
-                    <hr/>
+                    {/*}*/}
+                    {/*<label htmlFor="csvToJson">Select a CSV file</label>*/}
+                    {/*<input type="file" onChange={this.fileSelection} />*/}
+                {/*</div>*/}
+                    {/*<hr/>*/}
                 <div className="App">
                     {
                         this.state.convertedJson.length ?
