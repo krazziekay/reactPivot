@@ -4,8 +4,11 @@
 
 import React, { Component } from 'react';
 import ownPivot from './../../utils/pivot';
+import axios from 'axios';
+import columnWiseSort from '../../utils/columnWiseSort';
 
 class OwnTable extends Component {
+
     constructor(props) {
         super(props);
         this.state = {
@@ -14,12 +17,14 @@ class OwnTable extends Component {
             optionFields: [],
             rowFields: [],
             columnFields: [],
-            tableData: []
+            tableData: [],
+            sortOrder: 1,
+            selectedSortIndex: '',
+            loading: false
         };
     }
 
     componentDidMount() {
-        console.log("Here is the data", this.props.pivotData);
         this.setState({
             data: this.props.pivotData,
             //Getting the properties of each object in the array
@@ -87,18 +92,43 @@ class OwnTable extends Component {
                     document.getElementsByClassName('field-items')[i].addEventListener('drag', this.onDragEnter);
                 }
             });
+            this.setState({loading: true});
             this.updateTable();
         }
     }
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////1
 
+
+    sortColumn = (index) => {
+        this.setState({loading: true});
+        let sortedData = columnWiseSort(this.state.tableData, index, this.state.sortOrder);
+        this.setState({
+            tableData: sortedData.data,
+            sortOrder: sortedData.sortOrder,
+            selectedSortIndex: index
+        }, () => this.setState({loading: false}));
+    }
+    
     // This function pivots the actual unmanaged data
     updateTable = () => {
-        let result = ownPivot(this.state.data, this.state.rowFields, this.state.columnFields, {});
-        this.setState({
-            tableData: result//saving the pivoted table data here
-        }, () => console.log("Here", this.state.tableData));
+        axios.post('http://localhost:8080/api/pivot', {rowFields: this.state.rowFields, colFields: this.state.columnFields})
+            .then( (result) => {
+                this.setState({
+                    tableData: result.data,
+                    sortOrder: 0,
+                    selectedSortIndex: ''
+                } , () => this.setState({loading: false}) );
+            })
+            .catch( (error) => {
+                this.setState({loading: false});
+                console.log("Network connection error!");
+            })
+        //
+        // let result = ownPivot(this.state.data, this.state.rowFields, this.state.columnFields, {});
+        // this.setState({
+        //     tableData: result//saving the pivoted table data here
+        // }, () => console.log("Here", this.state.tableData));
     }
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////1
@@ -108,7 +138,9 @@ class OwnTable extends Component {
             <div>
                 <div className="header">
                     <h3>Sample Pivot Table</h3>
-
+                    {
+                        this.state.loading && <div className="loading">Processing please wait...</div>
+                    }
                     <table className="table table-bordered">
                         <tbody>
                             <tr>
@@ -146,10 +178,9 @@ class OwnTable extends Component {
 
                                 <td>
                                     {
-                                        this.state.tableData.length > 0 ?
+                                        this.state.tableData.result ?
                                             <table className="table table-bordered med-font-size">
                                                 <tbody>
-
                                                 {//For the multiple rows in the column field
                                                     this.state.columnFields.map( (_, index) =>
                                                         <tr>
@@ -161,8 +192,13 @@ class OwnTable extends Component {
                                                             }
                                                             {
                                                                 //The multi-layer row-wise viewing of the column fields
-                                                                this.state.tableData.columnHeaders && this.state.tableData.columnHeaders.map( (col) =>
-                                                                    <td className="colored-bg">{col[index]}</td>
+                                                                this.state.tableData.columnHeaders && this.state.tableData.columnHeaders.map( (col, colIndex) =>
+                                                                    <td className="pointer colored-bg" onClick={() => this.sortColumn(colIndex)}>
+                                                                        {col[index]}
+                                                                        { this.state.selectedSortIndex && this.state.selectedSortIndex === colIndex ?
+                                                                            this.state.sortOrder === 0 ? <span className="order-indicator">ASC</span> : <span className="order-indicator">DES</span>
+                                                                            : null }
+                                                                        </td>
                                                                 )
                                                             }
                                                         </tr>
@@ -185,8 +221,8 @@ class OwnTable extends Component {
                                                                         this.state.tableData.columnHeaders.map( (col, colIndex) =>
                                                                             <td>
                                                                                 {
-                                                                                    this.state.tableData[rowIndex][colIndex] ?
-                                                                                        this.state.tableData[rowIndex][colIndex].length : ''
+                                                                                    this.state.tableData.result[rowIndex][colIndex] ?
+                                                                                        this.state.tableData.result[rowIndex][colIndex].length : ''
                                                                                 }
                                                                                 </td>
                                                                         ) : null

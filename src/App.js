@@ -10,6 +10,8 @@ import axios from 'axios';
 import PapaParse from 'papaparse';
 import {URL, config, body} from './constants';
 
+import defaultFile from './pivotCSVs/report-1497933424.csv';
+// import defaultFile from './pivotCSVs/report-1497934353.csv';
 
 class App extends Component {
 
@@ -17,12 +19,26 @@ class App extends Component {
         super(props);
         this.state = {
             convertedJson: [],
+            fromApi: [],
             loading: false
         };
     }
 
     componentDidMount() {
         // this.loadFromApi();
+        let request = new XMLHttpRequest();
+        request.open("GET", defaultFile, false);
+        request.send(null);
+        PapaParse.parse( request.response, {
+            header: true,
+            dynamicTyping: true,
+            complete: (parsed) => {
+                this.setState( {
+                    convertedJson: parsed.data,
+                    loading:false
+                })
+            }
+        })
     }
 
     fileSelection = (e) => {
@@ -41,11 +57,10 @@ class App extends Component {
 
     loadFromApi = () => {
         this.setState({loading: true});
-        axios.post( URL, body, config)
+        axios.get('http://localhost:3005/table')
             .then( (response) => {
-                console.log("reponse received" , response.data);
                 this.setState({
-                    convertedJson: response.data,
+                    fromApi: JSON.stringify(response.data),
                     loading: false
                 });
             })
@@ -53,6 +68,7 @@ class App extends Component {
                 console.log("The error is : ", error);
             });
     }
+
 
     render() {
         return (
@@ -67,8 +83,10 @@ class App extends Component {
                 </div>
                     <hr/>
                 <div className="App">
-                    <OwnTable pivotData={this.state.convertedJson.length > 0 ? this.state.convertedJson : SAMPLE1}/>
-                    {/*<OwnTable pivotData={SAMPLE1}/>*/}
+                    {
+                        this.state.convertedJson.length ?
+                            <OwnTable pivotData={this.state.convertedJson} /> : <OwnTable pivotData={SAMPLE1} />
+                    }
                 </div>
             </div>
         );

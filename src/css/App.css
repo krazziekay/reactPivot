@@ -4,8 +4,9 @@
 .App {
   padding: 20px 50px;
 }
-
-
+.pointer {
+  cursor: pointer;
+}
 .gap {
   margin: 10px;
 }
@@ -46,4 +47,15 @@ li {
 }
 .med-font-size {
   font-size: 11px;
+}
+
+.order-indicator {
+  background: #5b7b7b;
+  color: white;
+  padding: 2px;
+  margin: 3px;
+  border-radius: 10px;
+  font-size: 9px;
+  float: right;
+  line-height: 5px;
 }
