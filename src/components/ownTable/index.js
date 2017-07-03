@@ -9,8 +9,8 @@ import columnWiseSort from '../../utils/columnWiseSort';
 
 class OwnTable extends Component {
 
-    constructor(props) {
-        super(props);
+    constructor() {
+        super();
         this.state = {
             selectedField: '',
             data: [],

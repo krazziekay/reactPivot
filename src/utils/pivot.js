@@ -38,7 +38,6 @@ let jsonPivot = (function() {
             return concat;
         }());
 
-
         function insert(value, comparator, values) {
             let r = values.length - 1;
             if (r === -1) {

@@ -5,7 +5,7 @@
 import React, {Component} from 'react';
 import './css/App.css';
 import {SAMPLE1, SAMPLE2} from './constants'
-import OwnTable from './components/ownTable/index';
+import OwnTable from './components/ownTableRefactor/index';
 import axios from 'axios';
 import PapaParse from 'papaparse';
 import {URL, config, body} from './constants';
